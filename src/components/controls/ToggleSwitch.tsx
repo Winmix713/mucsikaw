@@ -1,4 +1,4 @@
-import React, { useCallback, useId, Component } from 'react';
+import { useCallback, useId } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx } from 'clsx';
 // ─── Types ────────────────────────────────────────────────────────────────────

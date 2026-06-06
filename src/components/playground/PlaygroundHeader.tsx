@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import type { ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import {
   Save,
@@ -28,7 +28,7 @@ interface PlaygroundHeaderProps {
 }
 interface ActionButtonProps {
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   onClick: () => void;
   disabled?: boolean;
   primary?: boolean;

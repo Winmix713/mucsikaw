@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, Component } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Eye,
@@ -15,8 +15,9 @@ import {
   Layers,
   Sparkles,
   Check,
-  BoxIcon } from
-'lucide-react';
+  BoxIcon,
+  type LucideIcon
+} from 'lucide-react';
 import { SegmentedControl } from '../controls/SegmentedControl';
 import {
   ButtonStyle,
@@ -35,8 +36,6 @@ interface ControlAsideProps {
   style: ButtonStyle;
   appearance: Appearance;
   accent: string;
-  activeThemeId: string;
-  onThemeChange: (id: string) => void;
   onAppearanceChange: (a: Appearance) => void;
   onUpdate: (patch: Partial<ButtonStyle>, coalesce?: boolean) => void;
   onUpdateEffect: (
@@ -697,9 +696,7 @@ const EFFECT_META: Record<
   EffectKind,
   {
     label: string;
-    Icon: ComponentType<{
-      size?: number;
-    }>;
+    Icon: LucideIcon;
   }> =
 {
   glass: {
@@ -866,7 +863,7 @@ function EffectDetails({
 
   }
   if (kind === 'dropShadow' || kind === 'innerShadow') {
-    const s = effect as DropShadowEffect & InnerShadowEffect;
+    const s = effect as DropShadowEffect | InnerShadowEffect;
     const bound = kind === 'dropShadow' ? 48 : 24;
     return (
       <div className="flex flex-col gap-3">
@@ -1319,7 +1316,6 @@ export function ControlAside({
   style,
   appearance,
   accent,
-  onThemeChange,
   onAppearanceChange,
   onUpdate,
   onUpdateEffect

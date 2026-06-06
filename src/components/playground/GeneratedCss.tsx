@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Copy, Check } from 'lucide-react';
 import type { ButtonStyle, Appearance } from './types';

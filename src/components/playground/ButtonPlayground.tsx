@@ -1,21 +1,8 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  createElement,
-  Component } from
-'react';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { useButtonStyle } from './useButtonStyle';
 import { createDefaultStyle, createDefaultPresets, COLOR_THEMES } from './types';
 import { getStoredPresets, setStoredPresets } from './presetStorage';
-import type {
-  ButtonStyle,
-  Appearance,
-  Preset,
-  Effect,
-  EffectKind } from
-'./types';
+import type { ButtonStyle, Preset, Effect, EffectKind } from './types';
 import { generateCss, generateComponent } from './css';
 import { getTokens } from './theme';
 import { useTheme } from '../theme/hooks';
@@ -85,45 +72,45 @@ function backfill(e: Effect): Effect {
   switch (e.kind) {
     case 'glass':
       return {
-        dispersion: 50,
-        frost: 4,
-        splay: 0,
-        lightAngle: -45,
-        lightIntensity: 80,
-        ...e
+        ...e,
+        dispersion: e.dispersion ?? 50,
+        frost: e.frost ?? 4,
+        splay: e.splay ?? 0,
+        lightAngle: e.lightAngle ?? -45,
+        lightIntensity: e.lightIntensity ?? 80
       };
     case 'dropShadow':
       return {
-        showBehind: true,
-        ...e
+        ...e,
+        showBehind: e.showBehind ?? true
       };
     case 'innerShadow':
       return {
-        spread: 0,
-        ...e
+        ...e,
+        spread: e.spread ?? 0
       };
     case 'backgroundBlur':
       return {
-        mode: 'uniform',
-        amount: 4,
-        ...e
+        ...e,
+        mode: e.mode ?? 'uniform',
+        amount: e.amount ?? 4
       };
     case 'texture':
       return {
-        size: 0.5,
-        radius: 4,
-        clipToShape: false,
-        opacity: 24,
-        ...e
+        ...e,
+        size: e.size ?? 0.5,
+        radius: e.radius ?? 4,
+        clipToShape: e.clipToShape ?? false,
+        opacity: e.opacity ?? 24
       };
     case 'noise':
       return {
-        mode: 'mono',
-        size: 0.5,
-        density: 100,
-        color: '#000000',
-        opacity: 25,
-        ...e
+        ...e,
+        mode: e.mode ?? 'mono',
+        size: e.size ?? 0.5,
+        density: e.density ?? 100,
+        color: e.color ?? '#000000',
+        opacity: e.opacity ?? 25
       };
     default:
       return e;
@@ -176,27 +163,8 @@ export function ButtonPlayground() {
     },
     [show]
   );
-  const handleThemeChange = (id: string) => {
-    const theme = COLOR_THEMES.find((c) => c.id === id);
-    if (!theme) return;
-    const effects = style.effects.map((e) => {
-      if (e.kind === 'glass')
-      return {
-        ...e,
-        tint: theme.color
-      };
-      if (e.kind === 'dropShadow')
-      return {
-        ...e,
-        color: theme.color
-      };
-      return e;
-    }) as Effect[];
-    update({
-      baseColor: theme.color,
-      effects
-    });
-  };
+
+
   const handleApplyPreset = (preset: Preset) => {
     replace(normalize(preset.style));
     show(`Applied "${preset.name}"`);
@@ -252,16 +220,17 @@ export function ButtonPlayground() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [undo, redo]);
+
+  const rootStyle = {
+    '--accent': accent,
+    background: t.page,
+    fontFamily: "'Geist', 'DM Sans', system-ui, -apple-system, sans-serif"
+  } satisfies CSSProperties & Record<'--accent', string>;
+
   return (
     <div
       className="min-h-screen w-full"
-      style={{
-        // Only the design accent is injected locally; all themed surface,
-        // text, border and shadow variables come from the global provider.
-        ['--accent' as any]: accent,
-        background: t.page,
-        fontFamily: "'Geist', 'DM Sans', system-ui, -apple-system, sans-serif"
-      }}>
+      style={rootStyle}>
       
       <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6 lg:py-12">
         <PlaygroundHeader
@@ -332,14 +301,12 @@ export function ButtonPlayground() {
 
             {/* Control aside */}
             <ControlAside
-              style={style}
-              appearance={appearance}
-              accent={accent}
-              activeThemeId={activeTheme.id}
-              onThemeChange={handleThemeChange}
-              onAppearanceChange={setAppearance}
-              onUpdate={update}
-              onUpdateEffect={updateEffect} />
+            style={style}
+            appearance={appearance}
+            accent={accent}
+            onAppearanceChange={setAppearance}
+            onUpdate={update}
+            onUpdateEffect={updateEffect} />
             
           </div>
         </div>
