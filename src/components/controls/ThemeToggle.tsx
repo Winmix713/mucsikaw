@@ -1,6 +1,7 @@
-import React, { useCallback, Component } from 'react';
+import type { ComponentType, KeyboardEvent } from 'react';
+import { useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Sun, Moon, type LucideProps } from 'lucide-react';
+import { Moon, Sun, type LucideProps } from 'lucide-react';
 import { clsx } from 'clsx';
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Theme = 'light' | 'dark';
@@ -123,7 +124,7 @@ export function ThemeToggle({
   iconOnly
 }: ThemeToggleProps) {
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         e.preventDefault();
         onChange(theme === 'light' ? 'dark' : 'light');

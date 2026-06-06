@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { clsx } from 'clsx';
-import { BoxIcon } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 interface NumericFieldProps {
   value: number;
   onChange: (value: number) => void;
@@ -10,7 +10,7 @@ interface NumericFieldProps {
   /** Short leading label inside the box (e.g. "X", "Y") */
   prefix?: string;
   /** Leading glyph icon (e.g. Grid / Sun) */
-  icon?: BoxIcon;
+  icon?: LucideIcon;
   /** Trailing unit suffix (e.g. "°", "%") */
   suffix?: string;
   ariaLabel: string;

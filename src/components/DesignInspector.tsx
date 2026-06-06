@@ -1,17 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useRef,
-  Component } from
-'react';
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform } from
-'framer-motion';
+import React, { useCallback, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Sun,
   Moon,
@@ -29,8 +17,6 @@ import {
   Smartphone,
   Tablet,
   ChevronRight,
-  Plus,
-  Minus,
   AlignJustify,
   Scissors,
   Circle,
@@ -356,54 +342,7 @@ function NumberStepper({
     </div>);
 
 }
-function Toggle({
-  checked,
-  onChange,
-  theme = 'dark'
 
-
-
-
-}: {checked: boolean;onChange: (v: boolean) => void;theme?: Theme;}) {
-  const isLight = theme === 'light';
-  return (
-    <div className="flex w-full justify-end">
-      <button
-        onClick={() => onChange(!checked)}
-        role="switch"
-        aria-checked={checked}
-        className="relative flex-shrink-0 w-[40px] h-[22px] rounded-full"
-        style={{
-          background: checked ?
-          ACCENT :
-          isLight ?
-          'rgba(0,0,0,0.08)' :
-          'rgba(255,255,255,0.1)',
-          border: `1px solid ${checked ? ACCENT : isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.12)'}`,
-          transition: 'background 150ms ease-out, border-color 150ms ease-out',
-          boxShadow: checked ? `0 0 10px ${ACCENT}50` : 'none'
-        }}>
-        
-        <motion.div
-          className="absolute top-[1px] w-[18px] h-[18px] rounded-full bg-white"
-          animate={{
-            left: checked ? 19 : 1
-          }}
-          transition={{
-            type: 'spring',
-            stiffness: 600,
-            damping: 35
-          }}
-          style={{
-            boxShadow: isLight ?
-            '0 1px 2px rgba(0,0,0,0.2)' :
-            '0 1px 2px rgba(0,0,0,0.5)'
-          }} />
-        
-      </button>
-    </div>);
-
-}
 // ─── Premium: VisibleToggle ──────────────────────────────────────────────────
 // Eye/EyeOff morph inside a glowing knob. The track also reveals an active
 // pulse halo when visible.

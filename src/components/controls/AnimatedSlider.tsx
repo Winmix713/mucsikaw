@@ -1,12 +1,11 @@
-import React, {
+import {
+  memo,
   useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
   useId,
-  memo } from
-'react';
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { cn } from '../../lib/utils';
 import { AnimatedBadge } from './AnimatedBadge';
 // ─── Types ────────────────────────────────────────────────────────────────────

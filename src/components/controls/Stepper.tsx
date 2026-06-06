@@ -1,11 +1,10 @@
-import React, {
+import {
+  memo,
   useCallback,
   useEffect,
-  useState,
   useRef,
-  memo,
-  Component } from
-'react';
+  useState
+} from 'react';
 import { motion, useAnimate } from 'framer-motion';
 import { cn } from '../../lib/utils';
 // ─── Types ────────────────────────────────────────────────────────────────────

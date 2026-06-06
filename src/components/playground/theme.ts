@@ -20,7 +20,7 @@ export interface ThemeTokens {
   shadowPanel: string;
 }
 
-export function getTokens(appearance: Appearance, accent: string): ThemeTokens {
+export function getTokens(appearance: Appearance, _accent: string): ThemeTokens {
   if (appearance === 'light') {
     return {
       page: '#f4f5f8',
