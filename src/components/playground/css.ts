@@ -475,38 +475,45 @@ export function generateCss(style: ButtonStyle): string {
 }
 
 // ─── Generated React component string ──────────────────────────────────────────
+function toJsxTextLiteral(text: string): string {
+  return JSON.stringify(text);
+}
+
 export function generateComponent(style: ButtonStyle): string {
   const c = composeStyle(style, 'export');
+  const label = toJsxTextLiteral(style.label);
+
   if (c.texture) {
     return [
+      "import React from 'react'",
+      '',
+      'export function PrimaryButton() {',
+      '  return (',
+      '    <>',
+      '      <svg width="0" height="0" style={{ position: \'absolute\' }} aria-hidden>',
+      `        <filter id="${c.texture.filterId}">`,
+      `          <feTurbulence type="fractalNoise" baseFrequency="${c.texture.baseFrequency}" numOctaves={2} seed={3} />`,
+      `          <feDisplacementMap in="SourceGraphic" scale={${c.texture.scale}} />`,
+      '        </filter>',
+      '      </svg>',
+      `      <button className="primary-button">{${label}}</button>`,
+      '    </>',
+      '  )',
+      '}',
+      '',
+      '/* Pair with the generated .primary-button CSS. */'
+    ].join('\n');
+  }
+
+  return [
     "import React from 'react'",
     '',
     'export function PrimaryButton() {',
     '  return (',
-    '    <>',
-    '      <svg width="0" height="0" style={{ position: \'absolute\' }} aria-hidden>',
-    `        <filter id="${c.texture.filterId}">`,
-    `          <feTurbulence type="fractalNoise" baseFrequency="${c.texture.baseFrequency}" numOctaves={2} seed={3} />`,
-    `          <feDisplacementMap in="SourceGraphic" scale={${c.texture.scale}} />`,
-    '        </filter>',
-    '      </svg>',
-    `      <button className="primary-button">${style.label}</button>`,
-    '    </>',
+    `    <button className="primary-button">{${label}}</button>`,
     '  )',
     '}',
     '',
-    '/* Pair with the generated .primary-button CSS. */'].
-    join('\n');
-  }
-  return [
-  "import React from 'react'",
-  '',
-  'export function PrimaryButton() {',
-  '  return (',
-  `    <button className="primary-button">${style.label}</button>`,
-  '  )',
-  '}',
-  '',
-  '/* Pair with the generated .primary-button CSS. */'].
-  join('\n');
+    '/* Pair with the generated .primary-button CSS. */'
+  ].join('\n');
 }
