@@ -1,9 +1,9 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useState,
-  useRef,
   createContext } from
 'react';
 import {
@@ -54,6 +54,9 @@ function syncDocument(appearance: Appearance, accent: AccentName): void {
   root.style.colorScheme = appearance;
   applyTokens(root.style, resolveTokens(appearance, accent));
 }
+
+const useIsomorphicLayoutEffect =
+typeof window === 'undefined' ? useEffect : useLayoutEffect;
 export interface ThemeProviderProps {
   children: React.ReactNode;
   /** Default mode when nothing is stored. */
@@ -75,14 +78,11 @@ export function ThemeProvider({
   const [appearance, setAppearanceResolved] = useState<Appearance>(() =>
   resolveAppearance(getStoredMode() ?? defaultMode)
   );
-  // Apply tokens + document attributes synchronously before paint to reduce
-  // flash-of-incorrect-theme.
-  const firstRun = useRef(true);
-  useEffect(() => {
+
+  useIsomorphicLayoutEffect(() => {
     const resolved = resolveAppearance(mode);
     setAppearanceResolved(resolved);
     syncDocument(resolved, accent);
-    firstRun.current = false;
   }, [mode, accent]);
   // React to OS preference changes while in `system` mode.
   useEffect(() => {

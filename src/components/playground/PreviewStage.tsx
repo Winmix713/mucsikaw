@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Settings2, AlertTriangle, X } from 'lucide-react';
 import type { ButtonStyle, Appearance } from './types';

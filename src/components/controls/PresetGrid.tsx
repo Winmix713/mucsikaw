@@ -1,13 +1,12 @@
-import type { KeyboardEvent, PointerEvent } from 'react';
-import { memo, useCallback, useRef, useState } from 'react';
+import React, { useCallback, useState, useRef, memo } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Monitor,
-  SlidersHorizontal,
   Smartphone,
   Tablet,
-  type LucideIcon
-} from 'lucide-react';
+  Monitor,
+  SlidersHorizontal,
+  BoxIcon } from
+'lucide-react';
 /**
  * PresetGrid.tsx
  * Premium 10/10 – fully typed, memoized, animated, accessible preset selector.
@@ -20,7 +19,7 @@ export interface Preset {
   w: number | null;
   h: number | null;
   /** Any Lucide icon component */
-  icon?: LucideIcon;
+  icon?: BoxIcon;
   /** Disable this individual preset */
   disabled?: boolean;
 }
@@ -135,7 +134,7 @@ const PresetButton = memo(function PresetButton({
   const Icon = preset.icon;
   // Compute transform-origin from pointer position for an organic tap feel
   const handlePointerDown = useCallback(
-    (e: PointerEvent<HTMLButtonElement>) => {
+    (e: React.PointerEvent<HTMLButtonElement>) => {
       if (!ref.current) return;
       const rect = ref.current.getBoundingClientRect();
       setTapOrigin(`${e.clientX - rect.left}px ${e.clientY - rect.top}px`);
@@ -144,7 +143,7 @@ const PresetButton = memo(function PresetButton({
   );
   // Reset origin for keyboard users
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLButtonElement>) => {
+    (e: React.KeyboardEvent<HTMLButtonElement>) => {
       if (e.key === 'Enter' || e.key === ' ') {
         setTapOrigin('center center');
       }

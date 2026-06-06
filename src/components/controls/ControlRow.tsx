@@ -1,15 +1,16 @@
 import React, {
-  Children,
-  Fragment,
-  cloneElement,
-  createContext,
-  createElement,
+  useMemo,
   forwardRef,
-  isValidElement,
+  createContext,
   useContext,
+  Children,
   useId,
-  useMemo
-} from 'react';
+  cloneElement,
+  Fragment,
+  createElement,
+  Component,
+  isValidElement } from
+'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { AlertCircle } from 'lucide-react';
