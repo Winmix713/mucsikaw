@@ -8,10 +8,16 @@ import {
   FileDown,
   Undo2,
   Redo2,
-  RotateCcw } from
+  RotateCcw,
+  PanelLeft,
+  Search,
+  ChevronRight,
+  Sun,
+  Settings } from
 'lucide-react';
 import type { Appearance } from './types';
 import { getTokens } from './theme';
+import { useTheme } from '../theme/hooks';
 interface PlaygroundHeaderProps {
   appearance: Appearance;
   accent: string;
@@ -25,6 +31,8 @@ interface PlaygroundHeaderProps {
   onUndo: () => void;
   onRedo: () => void;
   onReset: () => void;
+  onToggleTheme?: () => void;
+  onToggleSidebar?: () => void;
 }
 interface ActionButtonProps {
   label: string;
@@ -36,6 +44,34 @@ interface ActionButtonProps {
   accent: string;
   iconOnly?: boolean;
 }
+function IconButton({
+  label,
+  icon,
+  onClick,
+  disabled,
+  appearance,
+  accent,
+  withBg = false
+}: ActionButtonProps & { withBg?: boolean }) {
+  return (
+    <motion.button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      whileHover={disabled ? undefined : { backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+      whileTap={disabled ? undefined : { scale: 0.92 }}
+      aria-label={label}
+      title={label}
+      className={[
+      'inline-flex h-7 w-7 items-center justify-center rounded-md text-neutral-400 transition-colors',
+      disabled ? 'cursor-not-allowed opacity-40' : 'hover:text-neutral-100'
+      ].join(' ')}
+      style={disabled ? { opacity: 0.4 } : {}}>
+
+      {icon}
+    </motion.button>);
+}
+
 function ActionButton({
   label,
   icon,
@@ -57,24 +93,10 @@ function ActionButton({
       aria-label={label}
       title={label}
       className={[
-      'flex h-9 items-center justify-center gap-2 rounded-[11px] border text-[12.5px] font-medium transition-all duration-200',
-      iconOnly ? 'w-9' : 'px-3.5',
-      disabled ? 'cursor-not-allowed opacity-40' : 'hover:shadow-md'].
-      join(' ')}
-      style={
-      primary ?
-      {
-        borderColor: 'transparent',
-        background: accent,
-        color: '#ffffff',
-        boxShadow: disabled ? undefined : `0 8px 24px ${accent}33`
-      } :
-      {
-        borderColor: t.border,
-        background: t.surface,
-        color: t.textHi
-      }
-      }>
+      'inline-flex items-center justify-center gap-1.5 rounded-md px-2 text-[13px] font-normal transition-all duration-200',
+      iconOnly ? 'h-7 w-7' : 'h-7',
+      disabled ? 'cursor-not-allowed text-neutral-600' : 'text-neutral-400 hover:bg-white/[0.04] hover:text-neutral-100'
+      ].join(' ')}>
 
       {icon}
       {!iconOnly && <span>{label}</span>}
@@ -93,162 +115,102 @@ export function PlaygroundHeader({
   onDownloadComponent,
   onUndo,
   onRedo,
-  onReset
+  onReset,
+  onToggleTheme,
+  onToggleSidebar
 }: PlaygroundHeaderProps) {
+  const { mode, toggleMode } = useTheme();
   const t = getTokens(appearance, accent);
+
   return (
-    <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <motion.div
-        className="flex flex-col gap-3"
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}>
-        <motion.span
-          className="inline-flex w-fit items-center gap-2 rounded-full border px-3.5 py-1.5 text-[11px] font-medium backdrop-blur-sm"
-          style={{
-            borderColor: t.border,
-            background: `${t.surface}cc`,
-            color: t.textMid
-          }}
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: 'spring', stiffness: 400 }}>
+    <header
+      data-testid="aura-header"
+      style={{ minHeight: '96px' }}
+      className="aura-head relative isolate flex w-full items-center gap-2 overflow-hidden rounded-[12px] border border-white/[0.06] bg-[#0a0a0a] px-2.5 text-neutral-200">
 
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-pulse rounded-full bg-emerald-400 opacity-70" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          </span>
-          Live visual editor
-        </motion.span>
-        <div>
-          <motion.h1
-            className="text-[28px] font-semibold leading-tight tracking-[-0.02em]"
-            style={{
-              color: t.textHi
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1, duration: 0.4 }}>
+      {/* Left section: Sidebar + Search */}
+      <div className="flex items-center gap-1">
+        <motion.button
+          type="button"
+          aria-label="Open sidebar"
+          title="Open sidebar"
+          onClick={onToggleSidebar}
+          whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+          whileTap={{ scale: 0.92 }}
+          className="inline-flex h-7 w-7 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-white/[0.06] hover:text-neutral-100">
+          <PanelLeft size={15} />
+        </motion.button>
 
-            Button Playground
-          </motion.h1>
-          <motion.p
-            className="mt-2 text-[13px]"
-            style={{
-              color: t.textMid
-            }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.4 }}>
+        <span className="mx-1 h-4 w-px bg-white/[0.08]" />
 
-            Design advanced buttons live — glass, depth, blur, noise — then copy
-            or export production-ready CSS.
-          </motion.p>
-        </div>
-      </motion.div>
+        <motion.button
+          type="button"
+          className="group inline-flex h-7 items-center gap-2 rounded-md border border-white/[0.06] bg-white/[0.03] px-2 text-[12.5px] text-neutral-400 transition-colors hover:border-white/10 hover:text-neutral-200"
+          whileHover={{ backgroundColor: 'rgba(255, 255, 255, 0.06)' }}
+          whileTap={{ scale: 0.92 }}>
+          <Search size={13} />
+          <span>Search</span>
+          <kbd className="ml-2 inline-flex h-4 min-w-4 items-center justify-center rounded border border-white/[0.08] bg-white/[0.03] px-1 font-mono text-[10px] text-neutral-500">
+            K
+          </kbd>
+        </motion.button>
+      </div>
 
-      <motion.div
-        className="flex flex-wrap items-center gap-3 rounded-2xl border p-3 backdrop-blur-md"
-        style={{
-          borderColor: t.border,
-          background: `${t.surface}80`
-        }}
-        initial={{ opacity: 0, x: 16 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.1, duration: 0.4 }}>
+      {/* Center: Breadcrumb */}
+      <nav aria-label="Breadcrumb" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <ol className="flex items-center gap-1.5 text-[13px] text-neutral-500">
+          <li className="text-neutral-300 transition-colors hover:text-white">
+            <a href="#" className="no-underline">Components</a>
+          </li>
+          <li aria-hidden="true" className="text-neutral-600">
+            <ChevronRight size={12} />
+          </li>
+          <li className="text-neutral-300 transition-colors hover:text-white">
+            <a href="#" className="no-underline">Button</a>
+          </li>
+        </ol>
+      </nav>
 
-        <motion.div whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 400 }}>
-          <ActionButton
-            label="Save preset"
-            icon={<Save size={14} />}
-            onClick={onSavePreset}
-            primary
-            appearance={appearance}
-            accent={accent} />
-        </motion.div>
+      {/* Right section: Actions */}
+      <div className="ml-auto flex items-center gap-0.5">
+        <ActionButton
+          label="Copy prompt"
+          icon={<Copy size={13} />}
+          onClick={onCopyCss}
+          appearance={appearance}
+          accent={accent} />
 
-        <div
-          className="h-6 w-px"
-          style={{
-            background: `${t.border}66`
-          }}
-          aria-hidden="true" />
+        <ActionButton
+          label="Copy code"
+          icon={<Code2 size={13} />}
+          onClick={onCopyComponent}
+          appearance={appearance}
+          accent={accent} />
 
-        <div className="flex items-center gap-2">
-          <ActionButton
-            label="Copy CSS"
-            icon={<Copy size={14} />}
-            onClick={onCopyCss}
-            appearance={appearance}
-            accent={accent} />
+        <ActionButton
+          label="View code"
+          icon={<FileDown size={13} />}
+          onClick={onDownloadComponent}
+          appearance={appearance}
+          accent={accent} />
 
-          <ActionButton
-            label="Copy Component"
-            icon={<Code2 size={14} />}
-            onClick={onCopyComponent}
-            appearance={appearance}
-            accent={accent} />
-        </div>
+        <span className="mx-1 h-4 w-px bg-white/[0.08]" />
 
-        <div
-          className="h-6 w-px"
-          style={{
-            background: `${t.border}66`
-          }}
-          aria-hidden="true" />
+        <IconButton
+          label="Toggle theme"
+          icon={<Sun size={14} />}
+          onClick={onToggleTheme || toggleMode}
+          appearance={appearance}
+          accent={accent} />
 
-        <div className="flex items-center gap-2">
-          <ActionButton
-            label="Download CSS"
-            icon={<Download size={14} />}
-            onClick={onDownloadCss}
-            iconOnly
-            appearance={appearance}
-            accent={accent} />
-
-          <ActionButton
-            label="Download Component"
-            icon={<FileDown size={14} />}
-            onClick={onDownloadComponent}
-            iconOnly
-            appearance={appearance}
-            accent={accent} />
-        </div>
-
-        <div
-          className="h-6 w-px"
-          style={{
-            background: `${t.border}66`
-          }}
-          aria-hidden="true" />
-
-        <div className="flex items-center gap-1">
-          <ActionButton
-            label="Undo"
-            icon={<Undo2 size={14} />}
-            onClick={onUndo}
-            disabled={!canUndo}
-            iconOnly
-            appearance={appearance}
-            accent={accent} />
-
-          <ActionButton
-            label="Redo"
-            icon={<Redo2 size={14} />}
-            onClick={onRedo}
-            disabled={!canRedo}
-            iconOnly
-            appearance={appearance}
-            accent={accent} />
-
-          <ActionButton
-            label="Reset to defaults"
-            icon={<RotateCcw size={14} />}
-            onClick={onReset}
-            iconOnly
-            appearance={appearance}
-            accent={accent} />
-        </div>
-      </motion.div>
-    </header>);
+        <IconButton
+          label="Settings"
+          icon={<Settings size={14} />}
+          onClick={() => {}}
+          appearance={appearance}
+          accent={accent} />
+      </div>
+    </header>
+  );
 
 }

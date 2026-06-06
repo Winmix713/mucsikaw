@@ -286,7 +286,9 @@ export function ButtonPlayground() {
           }
           onUndo={undo}
           onRedo={redo}
-          onReset={handleReset} />
+          onReset={handleReset}
+          onToggleSidebar={() => {}}
+          onToggleTheme={() => {}} />
         
 
         {/* Main panel */}
